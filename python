@@ -1,0 +1,72 @@
+import curses
+import time
+import random
+
+def draw_firework(stdscr, x, y, color_pair):
+    firework = [
+        "  *  ",
+        " *** ",
+        "*****",
+        " *** ",
+        "  *  "
+    ]
+    for i, line in enumerate(firework):
+        stdscr.addstr(y + i, x, line, curses.color_pair(color_pair))
+
+def clear_firework(stdscr, x, y):
+    blank = "     "
+    for i in range(5):
+        stdscr.addstr(y + i, x, blank)
+
+def draw_heart(stdscr, x, y):
+    heart = [
+        "  *****     *****  ",
+        " *******   ******* ",
+        "******** ********* ",
+        " ***************** ",
+        "  ***************  ",
+        "   *************   ",
+        "     *********     ",
+        "       *****       ",
+        "        ***        ",
+        "         *         "
+    ]
+    for i, line in enumerate(heart):
+        stdscr.addstr(y + i, x, line, curses.color_pair(2))
+
+def main(stdscr):
+    curses.curs_set(0)
+    stdscr.nodelay(1)
+    stdscr.timeout(100)
+    curses.start_color()
+
+    curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+
+    height, width = stdscr.getmaxyx()
+    fireworks = []
+
+    for _ in range(5):
+        x = random.randint(0, width - 5)
+        y = random.randint(0, height // 2)
+        fireworks.append((x, y))
+
+    while fireworks:
+        stdscr.clear()
+        for x, y in fireworks:
+            draw_firework(stdscr, x, y, 1)
+        stdscr.refresh()
+        time.sleep(0.5)
+        for x, y in fireworks:
+            clear_firework(stdscr, x, y)
+        fireworks.pop()
+
+    time.sleep(1)
+
+    heart_x = width // 2 - 10
+    heart_y = height // 2 - 5
+
+    draw_heart(stdscr, heart_x, heart_y)
+    stdscr.refresh()
+
+    time.sleep(
